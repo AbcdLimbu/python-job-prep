@@ -1,0 +1,15 @@
+<h2>TODO List</h2>
+
+<form action="/add" method="post">
+    <input type="text" placeholder="Enter your task" name="taskName" />
+    <input type="submit" value="Add" />
+</form>
+
+<ul>
+    {% for task in taskList %}
+        <li>
+            {{ task }} 
+            <a href="/delete/{{ loop.index0 }}"> delete </a>
+        </li>
+    {% endfor %}
+</ul>
