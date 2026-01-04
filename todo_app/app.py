@@ -1,11 +1,11 @@
-from flask import Flask, render_template, request
+from flask import Flask, redirect, url_for, request, render_template
 import psycopg
 
 app = Flask(__name__)
 
 @app.route("/")
 def home():
-    return render_template("index.html", task_list=get_task())
+    return render_template("index.html", task_list = get_task())
 
 def get_connection():
     return psycopg.connect(
@@ -33,9 +33,10 @@ def add_task():
         cursor = conn.cursor()
         cursor.execute("Insert into tasks (task_name) values (%s)", (task_name,))
         conn.commit()
-        conn.close()
         cursor.close()
-    return render_template("index.html", task_list = get_task())
+        conn.close()
+        
+    return redirect(url_for("home"))
 
 @app.route("/delete/<int:i>")
 def delete_task(i):
@@ -48,6 +49,19 @@ def delete_task(i):
     cursor.close()
     conn.close()
 
-    return render_template("index.html", task_list=get_task())
+    return redirect(url_for("home"))
+
+@app.route("/toogle/<int:i>")
+def toogle_task(i):
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("UPDATE tasks set completed = not completed where id=%s", (i,))
+    conn.commit()
+    cursor.close()
+    conn.close()
+
+    return redirect(url_for("home"))
+
 
 app.run(debug=True)

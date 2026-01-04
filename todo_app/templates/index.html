@@ -8,8 +8,18 @@
 <ol>
     {% for task in task_list %}
     <li>
-        {{ task[1] }} 
+        <input type="checkbox"
+            {% if task[2] %} checked {% endif %}
+            onclick="window.location.href='/toogle/{{ task[0] }}'"
+        />
+        {% if task[2] %}
+            <s>{{ task[1] }}</s>
+        {% else %}
+            {{ task[1] }}
+        {% endif %}
+
         <a href="/delete/{{ task[0] }}">delete</a>
+    
     </li>
     {% endfor %}
 </ol>
